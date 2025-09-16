@@ -1,0 +1,101 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #d6c29a, #ffffff);
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #8b5e3c, #603d26);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+            .navbar a {
+                color: white;
+                text-decoration: none;
+                margin-right: 20px;
+                font-weight: bold;
+                transition: color 0.3s ease;
+            }
+
+                .navbar a:hover {
+                    color: #ffd700;
+                }
+
+        .container {
+            width: 400px;
+            padding: 20px;
+            margin: 50px auto;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #603d26;
+        }
+
+        button {
+            width: 100%;
+            height: 60px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #8b5e3c, #603d26);
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            button:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+                background: linear-gradient(135deg, #603d26, #8b5e3c);
+            }
+
+            button:active {
+                box-shadow: 0 4px #3c2919;
+                transform: translateY(4px);
+            }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div>
+            <a href="/Book/AddNewBook">Add New Book</a>
+            <a href="/Book/BookList">Book List</a>
+            <a href="@Url.Action("Rating", "Book")">feedback </a>
+        </div>
+       
+    </div>
+
+    <!-- Content -->
+    <div class="container">
+        <h2>Welcome, Admin</h2>
+        <p>Manage your library effectively using the links above.</p>
+    </div>
+</body>
+</html>

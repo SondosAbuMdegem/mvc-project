@@ -1,0 +1,280 @@
+﻿
+@{
+    ViewBag.Title = "Search";
+}
+
+
+
+@model IEnumerable<Project0.Models.Book>
+
+@{
+    Layout = null;
+}
+
+<h2>Search Books</h2>
+
+<!-- نموذج البحث -->
+<form method="get" action="@Url.Action("Search", "Book")">
+    <div>
+        <label for="searchTerm">Book Title:</label>
+        <input type="text" id="searchTerm" name="searchTerm" value="@Request.QueryString["searchTerm"]" placeholder="Search by title">
+    </div>
+    <div>
+        <label for="author">Author:</label>
+        <input type="text" id="author" name="author" value="@Request.QueryString["author"]" placeholder="Search by author">
+    </div>
+    <button type="submit">Search</button>
+</form>
+
+<h3>Results:</h3>
+@if (Model.Any())
+{
+    <div class="row">
+        @foreach (var book in Model)
+        {
+            <div class="col-md-3 col-sm-12 mb-4">
+                <div class="card">
+                    <img src="@Url.Content(string.IsNullOrEmpty(book.CoverImage) ? "~/Content/Images/default.jpg" : book.CoverImage)" class="card-img-top" alt="Book Image" />
+                    <div class="card-body">
+                        <h5 class="card-title">@book.Title</h5>
+                        <p class="card-text">Author: @book.Author</p>
+
+                        @if (book.DiscountedPrice.HasValue && book.DiscountEndDate.HasValue && book.DiscountEndDate > DateTime.Now)
+                        {
+                            <p class="card-text">
+                                <span style="text-decoration: line-through; color: red;">
+                                    $@book.Price
+                                </span>
+                                <span style="color: green; font-weight: bold;">
+                                    $@book.DiscountedPrice
+                                </span>
+                            </p>
+                            <p class="discount-timer" style="font-size: 0.9em; color: #555;">
+                                Discount ends on: @book.DiscountEndDate.Value.ToShortDateString()
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="card-text">Price: $@book.Price</p>
+                        }
+
+                        <p class="card-text">@book.Description</p>
+                        <p class="card-text">Age Group: @book.AgeGroup</p>
+
+                        <!-- زر الإضافة إلى السلة -->
+                        <form id="rentForm-@book.BookId" method="post" action="@Url.Action("AddToCart", "Cart")">
+                            <input type="hidden" name="bookId" value="@book.BookId" />
+                            <div class="form-group">
+                                <label for="purchaseOrRent-@book.BookId">Purchase or Rent:</label>
+                                <select name="isRent" id="purchaseOrRent-@book.BookId" class="form-control" onchange="handleRentOption(@book.BookId, @book.AvailableCopies)">
+                                    <option value="false">Purchase</option>
+                                    <option value="true">Rent</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add to Cart</button>
+                        </form>
+
+                        <!-- زر الإضافة إلى قائمة الانتظار -->
+                        <form id="waitlistForm-@book.BookId" method="post" action="@Url.Action("AddToWaitlist", "Cart")" style="display: none;">
+                            <input type="hidden" name="bookId" value="@book.BookId" />
+                            <button type="submit" class="btn btn-secondary mt-2">Add to Waiting List</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+
+}
+else
+{
+    <p>No books found matching your search criteria.</p>
+}
+<style>
+    /* تخصيص الخلفية */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f5dc, #fff8dc); /* خلفية بدرجات البني الفاتح */
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* تخصيص العناوين */
+    h2 {
+        text-align: center;
+        color: #5a3e2b; /* لون بني داكن */
+        margin: 40px 0 20px 0;
+        font-size: 2.5rem;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    /* تخصيص الفلاتر */
+    .filters {
+        width: 100%;
+        margin-bottom: 40px;
+    }
+
+        .filters form {
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .filters .row {
+            display: flex;
+            justify-content: space-evenly;
+            gap: 20px;
+        }
+
+        .filters select,
+        .filters input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            border: 1px solid #d2b48c; /* إطار بني فاتح */
+            border-radius: 6px;
+            transition: border-color 0.3s ease;
+        }
+
+            .filters select:focus,
+            .filters input:focus {
+                border-color: #8b5a2b; /* لون بني غامق عند التمرير */
+                outline: none;
+            }
+
+    /* تخصيص البطاقات */
+    .card {
+        border: 1px solid #d2b48c; /* إطار بني فاتح */
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        background: #fffaf0; /* خلفية فاتحة */
+        padding: 20px;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+    .card-img-top {
+        width: 100%;
+        height: 250px; /* تصغير الحجم */
+        object-fit: cover;
+        border-radius: 6px;
+        transition: transform 0.3s ease;
+    }
+
+        .card-img-top:hover {
+            transform: scale(1.05);
+        }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #5a3e2b; /* لون بني داكن */
+        margin-bottom: 10px;
+        transition: color 0.3s ease;
+    }
+
+        .card-title:hover {
+            color: #8b5a2b; /* تدرج في اللون عند التمرير */
+        }
+
+    .card-text {
+        font-size: 1rem;
+        color: #7f5a41; /* لون بني متوسط */
+        margin-bottom: 8px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: center;
+    }
+
+    .col-md-3,
+    .col-md-2 {
+        flex: 1 0 22%;
+    }
+
+    .text-right {
+        text-align: right;
+        margin-top: 20px;
+    }
+
+    /* تخصيص الأزرار */
+    .btn {
+        font-size: 1rem;
+        padding: 12px 20px;
+        border-radius: 6px;
+        margin-top: 10px;
+        border: none;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .btn-primary {
+        background-color: #8b5a2b; /* لون بني متوسط */
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: #6b4226; /* لون بني داكن */
+            transform: scale(1.05);
+        }
+
+    .btn-secondary {
+        background-color: #d2b48c; /* لون بني فاتح */
+        color: white;
+    }
+
+        .btn-secondary:hover {
+            background-color: #b8966c; /* لون بني متوسط */
+            transform: scale(1.05);
+        }
+
+    /* تخصيص التنبيهات */
+    .alert-info {
+        background-color: #f0e6d2; /* خلفية بدرجات البني */
+        color: #5a3e2b; /* نص بني داكن */
+        border: 1px solid #d2b48c; /* إطار بني فاتح */
+        padding: 15px;
+        border-radius: 6px;
+        font-size: 1.1rem;
+        text-align: center;
+    }
+
+    /* تحسين تصميم الصفحة */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f5dc, #fff8dc); /* خلفية بدرجات البني الفاتح */
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* تخصيص الرسائل عند عدم وجود نتائج */
+    .no-results {
+        font-size: 1.2rem;
+        color: #8b5a2b;
+        text-align: center;
+        margin-top: 40px;
+        font-weight: bold;
+    }
+
+    /* إضافة تأثيرات خاصة عند التمرير على البطاقات */
+    .card-body:hover {
+        background-color: #f9f9f9; /* خلفية خفيفة */
+    }
+
+</style>

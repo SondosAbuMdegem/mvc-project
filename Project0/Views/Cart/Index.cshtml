@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Project0.Models.CartItem>
+ Layout = null;
+
+<h2>Shopping Cart</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Book</th>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Book.Title</td>
+                <td>@(item.IsRent ? "Rent" : "Buy")</td>
+                <td>@item.Quantity</td>
+                <td>$@(item.IsRent ? item.Book.RentalPrice : item.Book.Price)</td>
+                <td>$@item.TotalPrice</td>
+            </tr>
+        }
+    </tbody>
+</table>

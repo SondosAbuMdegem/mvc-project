@@ -1,0 +1,136 @@
+﻿@model IEnumerable<Project0.Models.CartItem>
+
+@{
+    ViewBag.Title = "Shopping Cart";
+    Layout = null;
+}
+
+<h2>Shopping Cart</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Book</th>
+
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Book.Title</td>
+                <td>@(item.IsRent ? "Rent" : "Buy")</td>
+                <td>
+                    <input type="hidden" name="CartItems[@item.CartItemId].CartItemId" value="@item.CartItemId" />
+                    <input type="number" name="CartItems[@item.CartItemId].Quantity" value="@item.Quantity" min="1" max="@item.Book.AvailableCopies" />
+                </td>
+                <td>$@(item.IsRent ? item.Book.RentalPrice : item.Book.Price)</td>
+                <td>$@(item.IsRent ? item.Quantity * item.Book.RentalPrice : item.Quantity * item.Book.Price)</td>
+                <td>
+                    <form method="post" action="@Url.Action("RemoveFromCart", "Cart")" style="display:inline;" onsubmit="return confirm('Are you sure you want to remove this item from the cart?');">
+                        <input type="hidden" name="cartItemId" value="@item.CartItemId" />
+                        <button type="submit" class="btn btn-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        <tr>
+            <td colspan="4" class="text-right"><strong>Grand Total:</strong></td>
+            <td colspan="2">$@Model.Sum(i => i.IsRent ? i.Quantity * i.Book.RentalPrice : i.Quantity * i.Book.Price)</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="text-right">
+    <a href="@Url.Action("ListBook", "Book")" class="btn btn-primary">Back to Books</a>
+
+    <!-- زر إتمام عملية الشراء -->
+    <form method="post" action="@Url.Action("Payment", "Order")">
+        <input type="hidden" name="totalAmount" value="@Model.Sum(i => i.IsRent ? i.Quantity * i.Book.RentalPrice : i.Quantity * i.Book.Price)" />
+        <button type="submit" class="btn btn-success">Proceed to Payment</button>
+    </form>
+</div>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #FAF3E0; /* خلفية دافئة فاتحة */
+    }
+
+    h2 {
+        text-align: center;
+        margin: 40px 0;
+        font-size: 2rem;
+        color: #6E4B3A; /* لون بني دافئ */
+    }
+
+    .table {
+        width: 80%;
+        margin: 0 auto;
+        border-collapse: collapse;
+        background-color: #FFF8E1; /* خلفية فاتحة للجدول */
+        border-radius: 8px;
+    }
+
+        .table th, .table td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #D2B48C; /* لون حدود بني فاتح */
+        }
+
+        .table th {
+            background-color: #D2B48C; /* خلفية داكنة للعناوين */
+            color: white;
+            font-weight: bold;
+        }
+
+    .btn {
+        font-size: 1rem;
+        padding: 12px 25px;
+        border-radius: 8px;
+        margin-top: 10px;
+        border: none;
+    }
+
+    .btn-danger {
+        background-color: #9C3B22; /* لون بني داكن */
+        color: white;
+    }
+
+    .btn-success {
+        background-color: #8A6E4B; /* بني فاتح */
+        color: white;
+    }
+
+    .btn-primary {
+        background-color: #6E4B3A; /* لون بني دافئ */
+        color: white;
+    }
+
+    .text-right {
+        text-align: right;
+        margin-top: 20px;
+    }
+
+    .btn-primary:hover, .btn-success:hover, .btn-danger:hover {
+        opacity: 0.8;
+        cursor: pointer;
+    }
+
+    .btn-danger:hover {
+        background-color: #7B2E17; /* لون بني أحمر داكن عند المرور */
+    }
+
+    .btn-success:hover {
+        background-color: #5D4A2C; /* لون بني فاتح داكن */
+    }
+
+    .btn-primary:hover {
+        background-color: #5E3B2E; /* لون بني داكن عند المرور */
+    }
+</style>

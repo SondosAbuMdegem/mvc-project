@@ -1,0 +1,346 @@
+﻿
+
+@model IEnumerable<Project0.Models.Book>
+
+
+@{
+    ViewBag.Title = "Book List";
+}
+@{
+    Layout = null;
+}
+
+
+<h2>Book List</h2>
+
+<div class="text-right">
+    <a href="@Url.Action("HomeC", "Home")" class="btn btn-primary">Back to home</a>
+</div>
+
+<!-- إضافة حقل البحث والقوائم المنسدلة في الأعلى -->
+<div class="filters">
+    <form method="get" action="@Url.Action("Index", "Book")">
+        <div class="row justify-content-center mb-4">
+            <!-- حقل البحث -->
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search by title or author" value="@Request.QueryString["search"]" />
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- تصنيف الفئة -->
+            <div class="col-md-2">
+                <select name="category" class="form-control">
+                    <option value="">Select Category</option>
+                    <option value="Romantic" @(Request.QueryString["category"] == "Romantic" ? "selected" : "")>Romantic</option>
+                    <option value="Science" @(Request.QueryString["category"] == "Science" ? "selected" : "")>Science</option>
+                    <option value="Fiction" @(Request.QueryString["category"] == "Fiction" ? "selected" : "")>Fiction</option>
+                    <option value="All" @(Request.QueryString["category"] == "All" ? "selected" : "")>All</option>
+                </select>
+            </div>
+
+            <!-- ترتيب حسب -->
+            <div class="col-md-2">
+                <select name="sortBy" class="form-control">
+                    <option value="">Sort By</option>
+                    <option value="Popularity" @(Request.QueryString["sortBy"] == "Popularity" ? "selected" : "")>Popularity</option>
+                    <option value="PriceHighLow" @(Request.QueryString["sortBy"] == "PriceHighLow" ? "selected" : "")>Price: High to Low</option>
+                    <option value="PriceLowHigh" @(Request.QueryString["sortBy"] == "PriceLowHigh" ? "selected" : "")>Price: Low to High</option>
+                    <option value="DatePublished" @(Request.QueryString["sortBy"] == "DatePublished" ? "selected" : "")>Date Published</option>
+                </select>
+            </div>
+
+            <!-- الفئة العمرية -->
+            <div class="col-md-2">
+                <select name="ageGroup" class="form-control">
+                    <option value="">Select Age Group</option>
+                    <option value="18Plus" @(Request.QueryString["ageGroup"] == "18Plus" ? "selected" : "")>18+</option>
+                    <option value="8Plus" @(Request.QueryString["ageGroup"] == "8Plus" ? "selected" : "")>8+</option>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- عرض الكتب في شبكة -->
+
+
+
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["Message"]
+    </div>
+}
+
+<!-- عرض الكتب في شبكة -->
+<div class="row">
+    @foreach (var book in Model)
+    {
+        <div class="col-md-3 col-sm-12 mb-4">
+            <div class="card">
+                <img src="@Url.Content(string.IsNullOrEmpty(book.CoverImage) ? "~/Content/Images/default.jpg" : book.CoverImage)" class="card-img-top" alt="Book Image" />
+                <div class="card-body">
+                    <h5 class="card-title">@book.Title</h5>
+                    <p class="card-text">Author: @book.Author</p>
+
+                    @if (book.DiscountedPrice.HasValue && book.DiscountEndDate.HasValue && book.DiscountEndDate > DateTime.Now)
+                    {
+                        <p class="card-text">
+                            <span style="text-decoration: line-through; color: red;">
+                                $@book.Price
+                            </span>
+                            <span style="color: green; font-weight: bold;">
+                                $@book.DiscountedPrice
+                            </span>
+                        </p>
+                        <p class="discount-timer" style="font-size: 0.9em; color: #555;">
+                            Discount ends on: @book.DiscountEndDate.Value.ToShortDateString()
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="card-text">Price: $@book.Price</p>
+                    }
+
+                    <p class="card-text">@book.Description</p>
+                    <p class="card-text">Age Group: @book.AgeGroup</p>
+                   
+
+                    <!-- زر الإضافة إلى السلة -->
+                    <form id="rentForm-@book.BookId" method="post" action="@Url.Action("AddToCart", "Cart")">
+                        <input type="hidden" name="bookId" value="@book.BookId" />
+                        <div class="form-group">
+                            <label for="purchaseOrRent-@book.BookId">Purchase or Rent:</label>
+                            <select name="isRent" id="purchaseOrRent-@book.BookId" class="form-control" onchange="handleRentOption(@book.BookId, @book.AvailableCopies)">
+                                <option value="false">Purchase</option>
+                                @if (book.RentalPrice != null && book.RentalPrice > 0)
+                                {
+                                    <option value="true">Rent</option>
+                                }
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add to Cart</button>
+                    </form>
+
+                    <!-- زر الإضافة إلى قائمة الانتظار -->
+                    <form id="waitlistForm-@book.BookId" method="post" action="@Url.Action("AddToWaitlist", "Cart")" style="display: none;">
+                        <input type="hidden" name="bookId" value="@book.BookId" />
+                        <button type="submit" class="btn btn-secondary mt-2">Add to Waiting List</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+<script>
+    function handleRentOption(bookId, availableCopies) {
+        const rentForm = document.getElementById(`rentForm-${bookId}`);
+        const waitlistForm = document.getElementById(`waitlistForm-${bookId}`);
+        const selectElement = document.getElementById(`purchaseOrRent-${bookId}`);
+        const isRent = selectElement.value === "true";
+
+        if (isRent && availableCopies <= 0) {
+            alert("No copies available for rent. Would you like to join the waiting list?");
+            rentForm.style.display = "none"; // إخفاء نموذج الإيجار
+            waitlistForm.style.display = "block"; // عرض نموذج قائمة الانتظار
+        } else {
+            rentForm.style.display = "block"; // عرض نموذج الإيجار
+            waitlistForm.style.display = "none"; // إخفاء نموذج قائمة الانتظار
+        }
+    }
+</script>
+
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f5dc, #fff8dc); /* خلفية بدرجات البني الفاتح */
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* تخصيص العناوين */
+    h2 {
+        text-align: center;
+        color: #5a3e2b; /* لون بني داكن */
+        margin: 40px 0 20px 0;
+        font-size: 2.5rem;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    /* تخصيص الفلاتر */
+    .filters {
+        width: 100%;
+        margin-bottom: 40px;
+    }
+
+        .filters form {
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .filters .row {
+            display: flex;
+            justify-content: space-evenly;
+            gap: 20px;
+        }
+
+        .filters select,
+        .filters input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            border: 1px solid #d2b48c; /* إطار بني فاتح */
+            border-radius: 6px;
+            transition: border-color 0.3s ease;
+        }
+
+            .filters select:focus,
+            .filters input:focus {
+                border-color: #8b5a2b; /* لون بني غامق عند التمرير */
+                outline: none;
+            }
+
+    /* تخصيص البطاقات */
+    .card {
+        border: 1px solid #d2b48c; /* إطار بني فاتح */
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        background: #fffaf0; /* خلفية فاتحة */
+        padding: 20px;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+    .card-img-top {
+        width: 100%;
+        height: 250px; /* تصغير الحجم */
+        object-fit: cover;
+        border-radius: 6px;
+        transition: transform 0.3s ease;
+    }
+
+        .card-img-top:hover {
+            transform: scale(1.05);
+        }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #5a3e2b; /* لون بني داكن */
+        margin-bottom: 10px;
+        transition: color 0.3s ease;
+    }
+
+        .card-title:hover {
+            color: #8b5a2b; /* تدرج في اللون عند التمرير */
+        }
+
+    .card-text {
+        font-size: 1rem;
+        color: #7f5a41; /* لون بني متوسط */
+        margin-bottom: 8px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: center;
+    }
+
+    .col-md-3,
+    .col-md-2 {
+        flex: 1 0 22%;
+    }
+
+    .text-right {
+        text-align: right;
+        margin-top: 20px;
+    }
+
+    /* تخصيص الأزرار */
+    .btn {
+        font-size: 1rem;
+        padding: 12px 20px;
+        border-radius: 6px;
+        margin-top: 10px;
+        border: none;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .btn-primary {
+        background-color: #8b5a2b; /* لون بني متوسط */
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: #6b4226; /* لون بني داكن */
+            transform: scale(1.05);
+        }
+
+    .btn-secondary {
+        background-color: #d2b48c; /* لون بني فاتح */
+        color: white;
+    }
+
+        .btn-secondary:hover {
+            background-color: #b8966c; /* لون بني متوسط */
+            transform: scale(1.05);
+        }
+
+    /* تخصيص التنبيهات */
+    .alert-info {
+        background-color: #f0e6d2; /* خلفية بدرجات البني */
+        color: #5a3e2b; /* نص بني داكن */
+        border: 1px solid #d2b48c; /* إطار بني فاتح */
+        padding: 15px;
+        border-radius: 6px;
+        font-size: 1.1rem;
+        text-align: center;
+    }
+
+    /* تحسين تصميم الصفحة */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f5dc, #fff8dc); /* خلفية بدرجات البني الفاتح */
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* تخصيص الرسائل عند عدم وجود نتائج */
+    .no-results {
+        font-size: 1.2rem;
+        color: #8b5a2b;
+        text-align: center;
+        margin-top: 40px;
+        font-weight: bold;
+    }
+
+    /* إضافة تأثيرات خاصة عند التمرير على البطاقات */
+    .card-body:hover {
+        background-color: #f9f9f9; /* خلفية خفيفة */
+    }
+</style>

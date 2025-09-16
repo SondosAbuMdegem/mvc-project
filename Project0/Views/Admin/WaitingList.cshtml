@@ -1,0 +1,24 @@
+﻿<h2>Waiting List</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Waitlist ID</th>
+            <th>Book ID</th>
+            <th>Book Title</th>
+            <th>Username</th>
+            <th>Request Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var entry in Model)
+        {
+            <tr>
+                <td>@entry.WaitlistId</td>
+                <td>@entry.BookId</td>
+                <td>@entry.BookTitle</td>
+                <td>@entry.Username</td>
+                <td>@entry.RequestDate.ToString("yyyy-MM-dd HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>

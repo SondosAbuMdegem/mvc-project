@@ -1,0 +1,234 @@
+﻿@model Project0.Models.Book
+
+@{
+    ViewBag.Title = "Add New Book";
+    Layout = null;
+}
+
+<div class="container">
+    <h2>Add New Book</h2>
+    @using Project0.Models
+
+
+    @using (Html.BeginForm("AddNewBook", "Book", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <!-- Display Validation Summary -->
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Title)
+            @Html.TextBoxFor(m => m.Title, new { @class = "form-control", placeholder = "Enter book title" })
+            @Html.ValidationMessageFor(m => m.Title, null, new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Author)
+            @Html.TextBoxFor(m => m.Author, new { @class = "form-control", placeholder = "Enter book author" })
+            @Html.ValidationMessageFor(m => m.Author, null, new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.BookType)
+            @Html.DropDownListFor(
+                         m => m.BookType,
+                         new SelectList(Enum.GetValues(typeof(BookType))),
+                         "Select a book type",
+                         new { @class = "form-control" }
+                     )
+            @Html.ValidationMessageFor(m => m.BookType, null, new { @class = "text-danger" })
+
+
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Price)
+            @Html.TextBoxFor(m => m.Price, new { @class = "form-control", placeholder = "Enter book price" })
+            @Html.ValidationMessageFor(m => m.Price, null, new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.RentalPrice)
+            @Html.TextBoxFor(m => m.RentalPrice, new { @class = "form-control", placeholder = "Enter rental price" })
+            @Html.ValidationMessageFor(m => m.RentalPrice, null, new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Description)
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 4, placeholder = "Enter book description" })
+            @Html.ValidationMessageFor(m => m.Description, null, new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Category)
+            @Html.DropDownListFor(
+                               m => m.Category,
+                               new SelectList(new List<string> { "Romantic", "Biography", "Mystery" }),
+                               "Select a category",
+                               new { @class = "form-control" }
+                           )
+            @Html.ValidationMessageFor(m => m.Category, null, new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.AgeGroup)
+            @Html.DropDownListFor(
+                               m => m.AgeGroup,
+                               new SelectList(new List<string> { "Children", "Teens", "Adults", "Seniors" }),
+                               "Select an age group",
+                               new { @class = "form-control" }
+                           )
+            @Html.ValidationMessageFor(m => m.AgeGroup, null, new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Popularity)
+            @Html.DropDownListFor(
+                               m => m.Popularity,
+                               new SelectList(new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }),
+                               "Select popularity (1-10)",
+                               new { @class = "form-control" }
+                           )
+            @Html.ValidationMessageFor(m => m.Popularity, null, new { @class = "text-danger" })
+        </div>
+
+        <!-- File Uploads -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.CoverImage)
+            <input type="file" name="coverImage" class="form-control" />
+            @Html.ValidationMessageFor(m => m.CoverImage, null, new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.PdfFile)
+            <input type="file" name="PdfFile" class="form-control" />
+            @Html.ValidationMessageFor(m => m.PdfFile, null, new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.MobiFile)
+            <input type="file" name="MobiFile" class="form-control" />
+            @Html.ValidationMessageFor(m => m.MobiFile, null, new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Fb2File)
+            <input type="file" name="Fb2File" class="form-control" />
+            @Html.ValidationMessageFor(m => m.Fb2File, null, new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.EpubFile)
+            <input type="file" name="EpubFile" class="form-control" />
+            @Html.ValidationMessageFor(m => m.EpubFile, null, new { @class = "text-danger" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Book</button>
+    }
+</div>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #d6c29a, #ffffff);
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: auto; /* لتعديل الطول بشكل مرن */
+        min-height: 100vh; /* لضمان أن الصفحة ستغطى الشاشة بالكامل */
+    }
+
+    .container {
+        width: 600px;
+        padding: 30px; /* زيادة الحشو داخل الحاوية */
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        overflow: auto; /* لضمان عدم تجاوز المحتوى خارج الحاوية */
+        min-height: 80vh; /* ضمان أن الحاوية ستغطى جزءاً كبيراً من الشاشة */
+    }
+
+    button {
+        width: 100%;
+        height: 50px;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        background: linear-gradient(135deg, #8b5e3c, #603d26);
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .container {
+        width: 600px; /* زيادة العرض */
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        overflow: auto; /* لضمان عدم تجاوز المحتوى خارج الحاوية */
+    }
+
+    h2 {
+        text-align: center;
+        color: #603d26;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #603d26;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #b8a89e;
+        border-radius: 5px;
+        box-sizing: border-box;
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+
+        input:focus, textarea:focus {
+            border-color: #8b5e3c;
+        }
+
+    button {
+        width: 100%;
+        height: 50px;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        background: linear-gradient(135deg, #8b5e3c, #603d26);
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, #603d26, #8b5e3c);
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px rgba(0, 0, 0, 0.2);
+        }
+
+    .text-danger {
+        color: #b33a3a;
+        font-size: 0.875em;
+        margin-top: 5px;
+    }
+</style>

@@ -1,0 +1,178 @@
+﻿@model Project0.Models.User
+
+@{
+    ViewBag.Title = "Sign Up";
+    Layout = null;
+}
+
+<div class="container">
+    <h2>Sign Up</h2>
+
+    @using (Html.BeginForm("SignUp", "Account", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <!-- Username -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.Username)
+            @Html.TextBoxFor(m => m.Username, new { @placeholder = "Enter your username" })
+            @Html.ValidationMessageFor(m => m.Username, null, new { @class = "text-danger" })
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email)
+            @Html.TextBoxFor(m => m.Email, new { @placeholder = "Enter your email address" })
+            @Html.ValidationMessageFor(m => m.Email, null, new { @class = "text-danger" })
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password)
+            @Html.PasswordFor(m => m.Password, new { @placeholder = "Enter your password" })
+            @Html.ValidationMessageFor(m => m.Password, null, new { @class = "text-danger" })
+        </div>
+
+        <!-- Role -->
+        <div class="form-group">
+            <label for="Role">Role</label>
+            <select id="Role" name="Role" required>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+
+        <!-- First Name -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.FirstName)
+            @Html.TextBoxFor(m => m.FirstName, new { @placeholder = "Enter your first name" })
+            @Html.ValidationMessageFor(m => m.FirstName, null, new { @class = "text-danger" })
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.LastName)
+            @Html.TextBoxFor(m => m.LastName, new { @placeholder = "Enter your last name" })
+            @Html.ValidationMessageFor(m => m.LastName, null, new { @class = "text-danger" })
+        </div>
+
+        <!-- ID -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.ID)
+            @Html.TextBoxFor(m => m.ID, new { @placeholder = "Enter your ID (9 digits)" })
+            @Html.ValidationMessageFor(m => m.ID, null, new { @class = "text-danger" })
+        </div>
+
+        <!-- Credit Card Number -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.CreditCardNumber)
+            @Html.TextBoxFor(m => m.CreditCardNumber, new { @placeholder = "Enter your credit card number (16 digits)" })
+            @Html.ValidationMessageFor(m => m.CreditCardNumber, null, new { @class = "text-danger" })
+        </div>
+
+        <!-- Valid Date -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.ValidDate)
+            @Html.TextBoxFor(m => m.ValidDate, new { @placeholder = "Enter your credit card's expiration date (MM/YY)" })
+            @Html.ValidationMessageFor(m => m.ValidDate, null, new { @class = "text-danger" })
+        </div>
+
+        <!-- CVC -->
+        <div class="form-group">
+            @Html.LabelFor(m => m.CVC)
+            @Html.TextBoxFor(m => m.CVC, new { @placeholder = "Enter your credit card's CVC (3 digits)" })
+            @Html.ValidationMessageFor(m => m.CVC, null, new { @class = "text-danger" })
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit">Sign Up</button>
+    }
+</div>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #d6c29a, #ffffff);
+        background-attachment: fixed;
+        margin: 0;
+        padding: 40px 0;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 40px;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #603d26;
+        font-size: 32px;
+        font-weight: 600;
+    }
+
+    .form-group {
+        width: 48%;
+        display: inline-block;
+        margin: 10px 1%;
+        vertical-align: top;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #603d26;
+        font-weight: bold;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #b8a89e;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+
+        input:focus, select:focus {
+            border-color: #8b5e3c;
+        }
+
+    .text-danger {
+        color: red;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    button {
+        width: 100%;
+        height: 50px;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        background: linear-gradient(135deg, #8b5e3c, #603d26);
+        border: none;
+        border-radius: 30px;
+        margin-top: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #603d26, #8b5e3c);
+        }
+
+        button:active {
+            box-shadow: 0 4px #3c2919;
+            transform: translateY(4px);
+        }
+
+</style>

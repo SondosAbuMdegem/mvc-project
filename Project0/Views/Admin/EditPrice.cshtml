@@ -1,0 +1,46 @@
+﻿@model Project0.Models.Book
+
+@{
+    ViewBag.Title = "Edit Book Price";
+}
+
+<h2>Edit Price for @Model.Title</h2>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.DiscountPercentage, "Discount Percentage (%)")
+        @Html.TextBoxFor(m => m.DiscountPercentage, new { @class = "form-control", type = "number", step = "0.01", min = "0", max = "100" })
+    </div>
+    
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.DiscountStartDate, "Discount Start Date")
+        @Html.TextBoxFor(m => m.DiscountStartDate, new { @class = "form-control", type = "date" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.DiscountEndDate, "Discount End Date")
+        @Html.TextBoxFor(m => m.DiscountEndDate, new { @class = "form-control", type = "date" })
+    </div>
+
+    <button type="submit" class="btn btn-success">Save Changes</button>
+}

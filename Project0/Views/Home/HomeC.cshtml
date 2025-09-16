@@ -1,0 +1,345 @@
+﻿@{
+    ViewBag.Title = "HomeC";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eBook Library</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="successModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>Payment Successful</h2>
+                <p>Your payment has been successfully processed, and your order has been added!</p>
+                <button id="viewPurchaseBtn" class="btn">View Purchased Items</button>
+            </div>
+        </div>
+    }
+
+<header>
+    <div class="logo">eBook Library</div>
+    <nav>
+        <ul>
+            <li><a href="@Url.Action("HomeC", "Home")">Home</a></li>
+            <li><a href="@Url.Action("ListBook", "Book")">Books</a></li>
+            <li><a href="@Url.Action("ShowBooks", "Book")">MyBooks</a></li>
+            <li> <a href="@Url.Action("Rating", "Book")">feedback </a></li>
+            
+            
+        </ul>
+    </nav>
+    <div class="search-cart">
+        <form method="get" action="@Url.Action("Search", "Book")">
+            <input type="text" name="searchTerm" placeholder="Search...">
+            <button type="submit">🔍</button>
+        </form>
+        <a href="@Url.Action("Cart", "Cart")">🛒</a>
+    </div>
+    <a href="@Url.Action("Payment", "Order")" class="btn-buy-now">Buy Now </a>
+</header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Welcome to eBook Library</h1>
+            <p>Enjoy reading with a wide range of eBooks</p>
+        </div>
+    </section>
+
+    <section class="books">
+        <h2>Latest Books</h2>
+        <div class="book-list">
+            @foreach (var book in Model)
+            {
+                <div class="book-item">
+                    <img src="@Url.Content("~/Content/Images/" + (book.CoverImage ?? "default.jpg"))" alt="@book.Title" />
+                    <p><strong>@book.Title</strong></p>
+                    <p>Author: @book.Author</p>
+                    <p>Price: $@book.Price</p>
+                    <button class="btn-view">View Details</button>
+                </div>
+            }
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 All rights reserved</p>
+        <div class="social-links">
+            <a href="#">Facebook</a> | <a href="#">Twitter</a>
+        </div>
+    </footer>
+
+    <script>
+        // JavaScript for handling modal display
+        const modal = document.getElementById("successModal");
+        const closeBtn = document.querySelector(".close-btn");
+        const viewPurchaseBtn = document.getElementById("viewPurchaseBtn");
+
+        if (modal) {
+            // Show the modal on page load if it exists
+            modal.style.display = "block";
+
+            // Close the modal when the close button is clicked
+            closeBtn.onclick = function () {
+                modal.style.display = "none";
+            };
+
+            // Redirect to purchased items page when the button is clicked
+            viewPurchaseBtn.onclick = function () {
+                window.location.href = "@Url.Action("ShowBooks", "Book")";
+            };
+
+            // Close the modal when clicking outside of it
+            window.onclick = function (event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            };
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-color: #f4f1ea;
+            color: #4a3c31;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: #5c4033;
+            color: #f4f1ea;
+        }
+
+            header .logo {
+                font-size: 1.5em;
+                font-weight: bold;
+            }
+
+            header nav ul {
+                list-style: none;
+                display: flex;
+                margin: 0;
+                padding: 0;
+            }
+
+                header nav ul li {
+                    margin-right: 15px;
+                }
+
+                    header nav ul li a {
+                        color: #f4f1ea;
+                        text-decoration: none;
+                        font-weight: bold;
+                        transition: color 0.3s;
+                    }
+
+                        header nav ul li a:hover {
+                            color: #d8c3a5;
+                        }
+
+            header .search-cart {
+                display: flex;
+                align-items: center;
+            }
+
+                header .search-cart input {
+                    padding: 5px;
+                    margin-right: 10px;
+                    border: 1px solid #d8c3a5;
+                    border-radius: 5px;
+                    background: #f9f7f1;
+                    color: #4a3c31;
+                }
+
+                header .search-cart button {
+                    background: #d8c3a5;
+                    border: none;
+                    color: #4a3c31;
+                    padding: 5px 10px;
+                    cursor: pointer;
+                    border-radius: 5px;
+                }
+
+                    header .search-cart button:hover {
+                        background: #b89f86;
+                    }
+
+        .hero {
+            text-align: center;
+            background-color: #f4f1ea;
+            color: #5c4033;
+            padding: 100px 20px;
+            position: relative;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .books {
+            padding: 20px;
+        }
+
+            .books h2 {
+                text-align: center;
+                color: #5c4033;
+                margin-bottom: 20px;
+            }
+
+        .book-list {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .book-item {
+            margin: 10px;
+            text-align: center;
+            border: 1px solid #d8c3a5;
+            padding: 15px;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+            .book-item img {
+                width: 150px;
+                height: 200px;
+                margin-bottom: 10px;
+            }
+
+            .book-item p {
+                margin: 5px 0;
+            }
+
+            .book-item .btn-view {
+                padding: 8px 15px;
+                background-color: #b89f86;
+                border: none;
+                color: #fff;
+                font-size: 1em;
+                cursor: pointer;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+            }
+
+                .book-item .btn-view:hover {
+                    background-color: #a68a6c;
+                }
+
+        footer {
+            text-align: center;
+            background: #5c4033;
+            color: #f4f1ea;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+
+            footer .social-links a {
+                color: #d8c3a5;
+                text-decoration: none;
+                margin: 0 10px;
+                transition: color 0.3s;
+            }
+
+                footer .social-links a:hover {
+                    color: #fff;
+                }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px; /* زيادة العرض */
+            height: auto; /* اجعل الارتفاع مرن */
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            width: 100%;
+            max-width: 500px; /* أقصى عرض للنافذة */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+            .close-btn:hover,
+            .close-btn:focus {
+                color: #000;
+                text-decoration: none;
+            }
+
+        .btn {
+            padding: 10px 20px;
+            background: #5c4033;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+            .btn:hover {
+                background: #d8c3a5;
+            }
+        /* تنسيق زر "اشتري الآن" */
+        .btn-buy-now {
+            display: inline-block;
+            background-color: #4e2a1f; /* اللون البني */
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+            .btn-buy-now:hover {
+                background-color: #6b3d2f; /* درجة أغمق من اللون البني عند التمرير */
+            }
+
+    </style>
+</body>
+</html>

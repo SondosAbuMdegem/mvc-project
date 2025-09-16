@@ -1,0 +1,304 @@
+﻿@model IEnumerable<Project0.Models.Book>
+
+@{
+    Layout = null;
+    var purchasedBooks = ViewBag.PurchasedBooks as List<Project0.Models.Book>;
+    var rentedBooks = ViewBag.RentedBooks as List<Project0.Models.Book>;
+}
+
+<h2>Purchased Books</h2>
+@if (purchasedBooks != null && purchasedBooks.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Author</th>
+                <th>Cover Image</th>
+                <th>Download Options</th>
+                <th>Rating</th> <!-- إضافة عمود للتقييم -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in purchasedBooks)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(book.CoverImage))
+                        {
+                            <img src="@book.CoverImage" alt="Cover Image" />
+                        }
+                        else
+                        {
+                            <span>No Image Available</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(book.PdfFile))
+                        {
+                            <a href="@book.PdfFile" download>Download PDF</a> <!-- رابط لتنزيل PDF -->
+                        }
+                        @if (!string.IsNullOrEmpty(book.EpubFile))
+                        {
+                            <a href="@book.EpubFile" download>Download EPUB</a> <!-- رابط لتنزيل EPUB -->
+                        }
+                        @if (!string.IsNullOrEmpty(book.Fb2File))
+                        {
+                            <a href="@book.Fb2File" download>Download FB2</a> <!-- رابط لتنزيل FB2 -->
+                        }
+                        @if (!string.IsNullOrEmpty(book.MobiFile))
+                        {
+                            <a href="@book.MobiFile" download>Download MOBI</a> <!-- رابط لتنزيل MOBI -->
+                        }
+                    </td>
+                    <td>
+                        <!-- نموذج إرسال التقييم -->
+                        <form action="@Url.Action("SubmitRating", "Book")" method="post" class="rating-form">
+                            <input type="hidden" name="BookId" value="@book.BookId" /> <!-- معرف الكتاب -->
+
+                            <div class="form-group">
+                                <label for="Rating" class="rating-label">Rate this book:</label>
+                                <div class="rating-stars">
+                                    <input type="radio" name="Rating" value="5" id="star5" />
+                                    <label for="star5" title="5 stars">★</label>
+                                    <input type="radio" name="Rating" value="4" id="star4" />
+                                    <label for="star4" title="4 stars">★</label>
+                                    <input type="radio" name="Rating" value="3" id="star3" />
+                                    <label for="star3" title="3 stars">★</label>
+                                    <input type="radio" name="Rating" value="2" id="star2" />
+                                    <label for="star2" title="2 stars">★</label>
+                                    <input type="radio" name="Rating" value="1" id="star1" />
+                                    <label for="star1" title="1 star">★</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ReviewText" class="review-label">Your Review:</label>
+                                <textarea name="ReviewText" class="form-control review-input" rows="3" placeholder="Write your review here..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary submit-btn">Submit</button>
+                        </form>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="no-books-message">No Purchased Books Available.</p>
+}
+
+<h2>Rented Books</h2>
+@if (rentedBooks != null && rentedBooks.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Author</th>
+                <th>Cover Image</th>
+                <th>Download Options</th>
+                <th>Rating</th> <!-- إضافة عمود للتقييم -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in rentedBooks)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(book.CoverImage))
+                        {
+                            <img src="@book.CoverImage" alt="Cover Image" />
+                        }
+                        else
+                        {
+                            <span>No Image Available</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(book.PdfFile))
+                        {
+                            <a href="@book.PdfFile" download>Download PDF</a> <!-- رابط لتنزيل PDF -->
+                        }
+                        @if (!string.IsNullOrEmpty(book.EpubFile))
+                        {
+                            <a href="@book.EpubFile" download>Download EPUB</a> <!-- رابط لتنزيل EPUB -->
+                        }
+                        @if (!string.IsNullOrEmpty(book.Fb2File))
+                        {
+                            <a href="@book.Fb2File" download>Download FB2</a> <!-- رابط لتنزيل FB2 -->
+                        }
+                        @if (!string.IsNullOrEmpty(book.MobiFile))
+                        {
+                            <a href="@book.MobiFile" download>Download MOBI</a> <!-- رابط لتنزيل MOBI -->
+                        }
+                    </td>
+                    <td>
+                        <!-- عرض التقييم إذا كان موجودًا -->
+                    <td>
+                        <!-- نموذج إرسال التقييم -->
+                        <form action="@Url.Action("SubmitRating", "Book")" method="post" class="rating-form">
+                            <input type="hidden" name="BookId" value="@book.BookId" /> <!-- معرف الكتاب -->
+                           
+                            <div class="form-group">
+                                <label for="Rating" class="rating-label">Rate this book:</label>
+                                <div class="rating-stars">
+                                    <input type="radio" name="Rating" value="5" id="star5" />
+                                    <label for="star5" title="5 stars">★</label>
+                                    <input type="radio" name="Rating" value="4" id="star4" />
+                                    <label for="star4" title="4 stars">★</label>
+                                    <input type="radio" name="Rating" value="3" id="star3" />
+                                    <label for="star3" title="3 stars">★</label>
+                                    <input type="radio" name="Rating" value="2" id="star2" />
+                                    <label for="star2" title="2 stars">★</label>
+                                    <input type="radio" name="Rating" value="1" id="star1" />
+                                    <label for="star1" title="1 star">★</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ReviewText" class="review-label">Your Review:</label>
+                                <textarea name="ReviewText" class="form-control review-input" rows="3" placeholder="Write your review here..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary submit-btn">Submit</button>
+                        </form>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="no-books-message">No Rented Books Available.</p>
+}
+
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+    }
+
+    h2 {
+        color: #4e2a1f; /* لون بني غامق */
+    }
+
+    .table {
+        background-color: #fff8f1; /* خلفية فاتحة بدرجة بني */
+        border: 1px solid #d0b39e; /* حدود بلون بني فاتح */
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .table th, .table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #d0b39e;
+        }
+
+        .table th {
+            background-color: #d8b3a3; /* رأس الجدول بلون بني فاتح */
+            color: white;
+        }
+
+        .table img {
+            max-width: 100px;
+            max-height: 150px;
+        }
+
+    .no-books-message {
+        color: #4e2a1f;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .table a {
+        color: #4e2a1f; /* اللون البني */
+        text-decoration: none; /* إزالة الخط السفلي (اختياري) */
+    }
+
+        .table a:hover {
+            color: #8b5e2f; /* لون أغمق عند التمرير فوق الرابط */
+            text-decoration: underline; /* إضافة خط سفلي عند التمرير (اختياري) */
+        }
+    .rating-form {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 100%;
+    }
+
+    .rating-label {
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: block;
+        color: #333;
+    }
+
+    .rating-stars {
+        display: flex;
+        direction: row-reverse;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+        .rating-stars input {
+            display: none;
+        }
+
+        .rating-stars label {
+            font-size: 30px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+            .rating-stars input:checked ~ label,
+            .rating-stars label:hover,
+            .rating-stars label:hover ~ label {
+                color: #ffa500; /* لون النجمة النشطة */
+            }
+
+    .review-label {
+        font-weight: bold;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .review-input {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 8px;
+        font-size: 14px;
+        width: 100%;
+    }
+
+    .submit-btn {
+        background-color: #8b5e2f; /* لون بني */
+        color: white; /* لون النص */
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .submit-btn:hover {
+            background-color: #6f451e; /* لون بني أغمق عند التمرير */
+        }
+
+</style>

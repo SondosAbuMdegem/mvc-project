@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Project0.Models.Book>
+@{
+    ViewBag.Title = "Rating";
+    Layout = null;
+}
+
+<h2>Rating</h2>
+
+<h2>Book List with Ratings</h2>
+
+<!-- جدول لعرض الكتب مع التقييمات -->
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Book Title</th>
+            <th>Author</th>
+            <th>Ratings</th>
+            <th>Review</th>
+            <th>Rating Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Model)
+        {
+            <tr>
+                <td>@book.BookId</td>
+                <td>@book.Title</td>
+                <td>@book.Author</td>
+                <td>
+                    @foreach (var rating in book.Rating)
+                    {
+                        <p>Rating: @rating.RatingValue</p>
+                    }
+                </td>
+                <td>
+                    @foreach (var rating in book.Rating)
+                    {
+                        <p>@rating.ReviewText</p>
+                    }
+                </td>
+                <td>
+                    @foreach (var rating in book.Rating)
+                    {
+                        <p>@rating.ReviewDate.ToShortDateString()</p>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- تنسيق CSS لتحسين المظهر -->
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f4f4f4;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+</style>

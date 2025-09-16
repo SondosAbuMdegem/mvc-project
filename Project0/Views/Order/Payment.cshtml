@@ -1,0 +1,159 @@
+﻿@{
+    ViewBag.Title = "Payment";
+    Layout = null;
+}
+
+@model Project0.Models.PaymentViewModelcs
+
+<div class="container mt-5">
+    <h2 class="text-center">Payment</h2>
+    <hr />
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger text-center">@TempData["Error"]</div>
+    }
+
+    @using (Html.BeginForm("ProcessPayment", "Order", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        <div class="card shadow p-4">
+            <div class="form-group mb-3">
+                @Html.LabelFor(m => m.CardNumber, "Card Number", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.CardNumber, new { @class = "form-control", placeholder = "Enter your card number" })
+                @Html.ValidationMessageFor(m => m.CardNumber, null, new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.Label("Expiration Date (Month/Year)", null, new { @class = "form-label" })
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        @Html.TextBox("ExpirationMonth", null, new { @class = "form-control", placeholder = "MM" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBox("ExpirationYear", null, new { @class = "form-control", placeholder = "YYYY" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(m => m.CVC, "CVC", new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.CVC, new { @class = "form-control", placeholder = "Enter CVC" })
+                @Html.ValidationMessageFor(m => m.CVC, null, new { @class = "text-danger" })
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Pay</button>
+            </div>
+        </div>
+    }
+</div>
+
+
+<style>
+    :root {
+        --primary-color: #8B4513; /* بني داكن */
+        --secondary-color: #8B4513; /* بني فاتح */
+        --button-hover-color: #6A3F28; /* بني داكن أكثر */
+        --background-color: #F5F5F5; /* خلفية فاتحة */
+        --form-bg-color: #FFF8E1; /* لون خلفية النموذج */
+        --border-color: #C8A97E; /* لون الحدود */
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: var(--background-color);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        font-size: 2rem;
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-size: 1rem;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 1rem;
+        border: 1px solid var(--primary-color);
+        background-color: var(--form-bg-color);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(139, 69, 19, 0.6);
+        }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-color: #f5c6cb;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        font-size: 1.2rem;
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: none;
+        transition: background-color 0.3s;
+    }
+
+        .btn-primary:hover {
+            background-color: var(--button-hover-color);
+        }
+
+    .card {
+        background-color: var(--background-color);
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .d-grid {
+        display: grid;
+        place-items: center;
+    }
+
+    .row {
+        margin-bottom: 15px;
+    }
+
+        .row.g-2 {
+            margin-left: -10px;
+            margin-right: -10px;
+        }
+
+    .col-md-6 {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .alert {
+        margin-bottom: 30px;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    .card p {
+        font-size: 1.1rem;
+        color: var(--secondary-color);
+    }
+</style>
