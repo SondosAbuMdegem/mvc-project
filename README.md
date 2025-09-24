@@ -3,15 +3,6 @@
 This project is an **E-Library web application** built with **ASP.NET MVC** and **SQL Server**.  
 It was developed as part of an academic course to practice building structured MVC applications with authentication, database integration, and data security.
 
-## Features
-- User registration and login (Admin and User roles)  
-- Secure password hashing with SHA-256  
-- Book catalog with categories and details  
-- Borrowing and purchasing books  
-- Payment supported via **Credit Card** (PayPal option was optional and not implemented)  
-- Admin panel for managing books and users  
-- Data security and user role management  
-
 ## Technologies
 - ASP.NET MVC  
 - C#  
